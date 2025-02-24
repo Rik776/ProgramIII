@@ -2,6 +2,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
 
+@SuppressWarnings("rawtypes")
 public class List<T>  implements java.util.List  {
   private Node<T> head;
   private int size;
@@ -128,13 +129,26 @@ public boolean addAll(int index, Collection c) {
     
 @Override
 public boolean removeAll(Collection c) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'removeAll'");
+   if (containsAll(c)) {
+     for (Object object : c) {
+        remove(object);
+     }
+     return true;
+   }
+   return false;
 }
+@SuppressWarnings({ "unchecked" })
 @Override
 public boolean retainAll(Collection c) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'retainAll'");
+    if (containsAll(c)) {
+       forEach(t -> {if (!c.contains(t)) {
+        remove(t);
+       }
+     }
+       );
+       return true;
+    }
+    return false;
 }
 @Override
 public void clear() {
@@ -153,11 +167,32 @@ public Object get(int index) {
     }
     throw new IndexOutOfBoundsException("Index out of bounds. size = "+size);
 }
+@SuppressWarnings("unchecked")
 @Override
 public Object set(int index, Object element) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'set'");
+    Object auxObject;
+   if (contains(element)) {
+    Node<T> auxNode = new Node<T>((T)get(indexOf(element)));
+    
+    remove(element);
+        if (index == 0) {
+            auxObject = get(index);
+            auxNode.setNext(head);
+            head = auxNode;
+        }else if (index==size-1) {
+            auxObject = get(index);
+            verifyTail().setNext(auxNode);
+        }else if (index>0 && index<size-1) {
+            auxObject = get(index);
+            add(element);
+        }else{
+             throw new NullPointerException("The index is out of bounds size ="+ size);
+        }
+        return auxObject;
 }
+throw new NullPointerException("The object is not Listed");
+}
+@SuppressWarnings("unchecked")
 @Override
 public void add(int index, Object element) {
     Node<T> newNode = new Node<T>((T) element);
@@ -178,7 +213,11 @@ public void add(int index, Object element) {
  }
 @Override
 public Object remove(int index) {
-    throw new UnsupportedOperationException("Unimplemented method 'indexOf'");
+    if (index>=0 && index <=size-1) {
+        remove(get(index));
+        return true;
+    }
+    return false;
 }
 @Override
 public int indexOf(Object o) {
@@ -197,7 +236,7 @@ public int indexOf(Object o) {
 }
 @Override
 public int lastIndexOf(Object o) {
-    Node auxNode = head;
+    Node<T> auxNode = head;
     int auxInt=0;
     if (contains(o)) {
         while (auxNode.getNext()!=null) {
@@ -212,22 +251,32 @@ public int lastIndexOf(Object o) {
 }
 @Override
 public ListIterator listIterator() {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
 }
 @Override
 public ListIterator listIterator(int index) {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
 }
+@SuppressWarnings("unchecked")
 @Override
 public java.util.List subList(int fromIndex, int toIndex) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'subList'");
+    int intAux = 0;
+    List newList = new List<T>();
+    if (fromIndex>=0 && fromIndex<toIndex && toIndex<=size-1) {
+        for (Object object : this) {
+
+            if (intAux >= fromIndex && intAux <= toIndex) {
+                newList.add(object);
+            }
+            intAux++;
+    }
+    return newList;
+}
+throw new UnsupportedOperationException("Wrong index");
 }
 @Override
-public Iterator iterator() {
-   Iterator iterator = new Iterator<T>() {
+public Iterator<T> iterator() {
+   Iterator<T> iterator = new Iterator<T>() {
     Node<T> nodeAux = head;
     @Override
     public boolean hasNext() {

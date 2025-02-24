@@ -47,8 +47,18 @@ public class App {
     for (int index = 0; index < arrayAux.length; index++) {
       System.out.print(arrayAux[index]);
     }
+    System.out.println(list.set(0, 8));
+    System.out.println(list.set(8, 5));
+    System.out.println(list.set(6, 2));
     
+    for (Object object : list) {
+      System.out.println(object);
+    }
+    
+    list.forEach(t -> System.out.print(t) );
+    System.out.println("");
 
+    list.subList(0, 4).forEach(t -> System.out.print(t));
 
   }   
 }
